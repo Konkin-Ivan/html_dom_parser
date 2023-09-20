@@ -5,11 +5,13 @@ namespace App\parser;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CrawlerHelper {
-    public static function createCrawler($html) {
+    public static function createCrawler($html): Crawler
+    {
         return new Crawler($html);
     }
 
-    public static function extractDataFromTable(Crawler $crawler) {
+    public static function extractDataFromTable(Crawler $crawler): array
+    {
         $table = $crawler->filter('.accordion .accordion-item:nth-child(1)');
         $rows = $table->filter('tbody tr');
 
