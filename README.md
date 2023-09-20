@@ -4,6 +4,8 @@
 
 Переписал код на библиотеке dom-crawler, так как phpQuery имела много функций в статусе Deprecated.
 
+ [Предыдущий коммит:](https://github.com/Konkin-Ivan/html_dom_parser/tree/f08b825ac6ef908d156c18961b77201744e00306)
+
 Зависимости:
 
 ```json
