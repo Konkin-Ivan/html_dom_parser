@@ -20,38 +20,38 @@ curl_close($curl);
 //    "categories" => "Блоки ФБС",
 //    "description" => "Нормативный документ ГОСТ 13579-78 Длина, мм 1180 Ширина, мм 300 Высота, мм 580 Вес, т 0,42 Объём, м3 0,174"
 //];
-// Создаем объект PHPQuery и загружаем HTML код
-$doc = phpQuery::newDocument($html);
+// Создаем объект Crawler и загружаем HTML код
+$crawler = new Crawler($html);
 
 // Ищем таблицу и извлекаем нужные данные
-$table = $doc->find('.table');
-$rows = $table->find('tbody tr');
+$table = $crawler->filter('.accordion .accordion-item:nth-child(1)');
+$rows = $table->filter('tbody tr');
 
 // Массив для хранения полученных данных
 $data = [];
 
 // Обходим каждую строку таблицы
-foreach ($rows as $row) {
-    // Создаем объект PHPQuery для текущей строки
-    $pq = pq($row);
-
+$rows->each(function (Crawler $row) use (&$data) {
     // Извлекаем значения из ячеек
-    $name = $pq->find('td:nth-child(1)')->text();
-    $price = $pq->find('td:nth-child(3)')->text();
-    $categories = $pq->prevAll('.accordion-header')->find('button')->text();
-    $description = $pq->find('td:nth-child(2) a')->attr('title');
+    $name = $row->filter('td:nth-child(1)')->text();
+    $description = $row->filter('td:nth-child(2)')->text();
+    $categories = $row->closest('.accordion-item')->filter('h2')->text();
+    $priceWithGranite = $row->filter('td:nth-child(3)')->text();
+    $priceWithGravel = $row->filter('td:nth-child(4)')->text();
 
     // Формируем ассоциативный массив для текущей строки
     $rowData = [
         'name' => $name,
-        'price' => $price,
         'categories' => $categories,
-        'description' => $description
+        'description' => $description,
+        'price with granite' => $priceWithGranite,
+        'price with gravel' => $priceWithGravel
     ];
 
     // Добавляем данные в общий массив
     $data[] = $rowData;
-}
+});
 
 // Выводим полученные данные
+
 echo json_encode($data, JSON_UNESCAPED_UNICODE);
