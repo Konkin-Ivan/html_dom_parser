@@ -4,35 +4,35 @@ namespace App\parser;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-function createCrawler($html): Crawler
-{
-    return new Crawler($html);
-}
+class CrawlerHelper {
+    public static function createCrawler($html) {
+        return new Crawler($html);
+    }
 
-function extractDataFromTable(Crawler $crawler): array
-{
-    $table = $crawler->filter('.accordion .accordion-item:nth-child(1)');
-    $rows = $table->filter('tbody tr');
+    public static function extractDataFromTable(Crawler $crawler) {
+        $table = $crawler->filter('.accordion .accordion-item:nth-child(1)');
+        $rows = $table->filter('tbody tr');
 
-    $data = [];
+        $data = [];
 
-    $rows->each(function (Crawler $row) use (&$data) {
-        $name = $row->filter('td:nth-child(1)')->text();
-        $description = $row->filter('td:nth-child(2)')->text();
-        $categories = $row->closest('.accordion-item')->filter('h2')->text();
-        $priceWithGranite = $row->filter('td:nth-child(3)')->text();
-        $priceWithGravel = $row->filter('td:nth-child(4)')->text();
+        $rows->each(function (Crawler $row) use (&$data) {
+            $name = $row->filter('td:nth-child(1)')->text();
+            $description = $row->filter('td:nth-child(2)')->text();
+            $categories = $row->closest('.accordion-item')->filter('h2')->text();
+            $priceWithGranite = $row->filter('td:nth-child(3)')->text();
+            $priceWithGravel = $row->filter('td:nth-child(4)')->text();
 
-        $rowData = [
-            'name' => $name,
-            'categories' => $categories,
-            'description' => $description,
-            'price with granite' => $priceWithGranite,
-            'price with gravel' => $priceWithGravel
-        ];
+            $rowData = [
+                'name' => $name,
+                'categories' => $categories,
+                'description' => $description,
+                'price with granite' => $priceWithGranite,
+                'price with gravel' => $priceWithGravel
+            ];
 
-        $data[] = $rowData;
-    });
+            $data[] = $rowData;
+        });
 
-    return $data;
+        return $data;
+    }
 }
